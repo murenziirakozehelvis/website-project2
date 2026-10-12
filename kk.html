@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helvis Shop | Fresh Coffee</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- 1. COLORS AND FONTS ---------- */
+  :root {
+    --bg: #eef1ec;
+    --ink: #2b1d14;
+    --green: #1f5c4a;
+    --gold: #c8963e;
+    --card: #ffffff;
+    --font: "Bricolage Grotesque", system-ui, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: var(--font); background: var(--bg); color: var(--ink); line-height: 1.6; }
+  img { max-width: 100%; display: block; }
+  a { color: var(--green); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  /* ---------- 2. HEADER ---------- */
+  header { display: flex; justify-content: space-between; align-items: center; padding: 14px 5vw; background: var(--ink); color: #fff; position: sticky; top: 0; z-index: 10; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; font-weight: 800; }
+  .brand img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; background: var(--gold); }
+  nav a { color: #fff; margin-left: 20px; text-decoration: none; }
+  nav a:hover { color: var(--gold); }
+
+  /* ---------- 3. HERO WITH BACKGROUND PHOTO ---------- */
+  .hero {
+    min-height: 80vh; display: flex; align-items: center; padding: 60px 5vw; color: #fff;
+    background: linear-gradient(90deg, rgba(43,29,20,.85), rgba(43,29,20,.35)),
+                url("images/hero.jpg") center 45% / cover no-repeat,
+                var(--ink);               /* shown if hero.jpg is missing */
+  }
+  .hero h2 { font-size: clamp(2.2rem, 7vw, 4.5rem); line-height: 1.05; margin: 0 0 16px; font-weight: 800; max-width: 760px; }
+  .hero p { font-size: 1.15rem; max-width: 520px; }
+
+  section { padding: 60px 5vw; }
+  section h2 { font-size: 2rem; margin-top: 0; }
+
+  .btn { background: var(--green); color: #fff; border: 0; padding: 12px 22px; border-radius: 8px; font: inherit; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: background .2s; }
+  .btn:hover { background: #164537; }
+  .hero .btn { background: var(--gold); color: var(--ink); }
+  .hero .btn:hover { background: #dba94f; }
+
+  /* ---------- 4. PRODUCTS WITH PHOTOS ---------- */
+  .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; }
+  .product { background: var(--card); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 2px 10px rgba(43,29,20,.08); transition: transform .2s, box-shadow .2s; }
+  .product:hover { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(43,29,20,.15); }
+  .product img { width: 100%; height: 220px; object-fit: cover; object-position: center 55%; background: #d9d2c5; }
+  .product .info { padding: 18px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .product h3 { margin: 0; }
+  .product .origin { color: #6b5b4e; font-size: .9rem; margin: 0; }
+  .product .price { font-weight: 800; font-size: 1.2rem; margin-top: auto; }
+
+  /* ---------- 5. CART ---------- */
+  #cart { background: var(--card); border-radius: 14px; padding: 24px; max-width: 560px; box-shadow: 0 2px 10px rgba(43,29,20,.08); }
+  #cart ul { list-style: none; padding: 0; margin: 0 0 14px; }
+  #cart li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid #e3e3e3; }
+  .remove { background: none; border: 0; color: #b3261e; cursor: pointer; font: inherit; }
+  .total { font-weight: 800; font-size: 1.2rem; }
+
+  /* ---------- 6. ABOUT (photo + text side by side) ---------- */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .about-grid img { border-radius: 14px; height: 340px; width: 100%; object-fit: cover; background: #d9d2c5; }
+  .about-grid p { max-width: 560px; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
+
+  #contact p { max-width: 600px; }
+  footer { text-align: center; padding: 24px; background: var(--ink); color: #fff; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <img src="images/logo.png" alt="" onerror="this.style.display='none'">
+    <span>Helvis Shop</span>
+  </div>
+  <nav>
+    <a href="#shop">Shop</a>
+    <a href="#cart">Cart (<span id="cart-count">0</span>)</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div>
+    <h2>Fresh roasted coffee from Helvis Shop.</h2>
+    <p>Order whole beans or ground coffee from local farms. Roasted this week, delivered to your door.</p>
+    <a class="btn" href="#shop">Shop coffee</a>
+  </div>
+</div>
+
+<section id="shop">
+  <h2>Our coffee</h2>
+  <div class="products" id="product-list"></div>
+</section>
+
+<section>
+  <div id="cart">
+    <h2>Your cart</h2>
+    <ul id="cart-items"></ul>
+    <p class="total">Total: <span id="cart-total">0</span> RWF</p>
+    <button class="btn" id="checkout">Order now</button>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-grid">
+    <img src="images/about.jpg" alt="Inside Helvis Shop">
+    <div>
+      <h2>About Helvis Shop</h2>
+      <p>Helvis Shop sells coffee bought directly from farmers, roasted in small batches and delivered fresh. Write your own story here.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact us</h2>
+  <p>Phone / WhatsApp: <a href="tel:+250700000000">+250 700 000 000</a><br>
+     Email: <a href="mailto:hello@example.com">hello@example.com</a><br>
+     Address: Kigali, Rwanda</p>
+</section>
+
+<footer>&copy; 2026 Helvis Shop</footer>
+
+<script>
+  /* ---------- A. YOUR PRODUCTS ----------
+     "image" is the file name inside the images folder. */
+  const products = [
+    { id: 1, name: "Rwanda Bourbon",  origin: "Nyamasheke, 250g", price: 6000,  image: "coffee1.jpg" },
+    { id: 2, name: "Lake Kivu Blend", origin: "Rubavu, 250g",     price: 5500,  image: "coffee2.jpg" },
+    { id: 3, name: "Dark Roast",      origin: "Huye, 250g",       price: 5000,  image: "coffee3.jpg" },
+    { id: 4, name: "Light Roast",     origin: "Gakenke, 250g",    price: 6500,  image: "coffee4.jpg" },
+    { id: 5, name: "Espresso Blend",  origin: "Mixed, 500g",      price: 10500, image: "coffee5.jpg" },
+    { id: 6, name: "Decaf",           origin: "Rutsiro, 250g",    price: 7000,  image: "coffee6.jpg" }
+  ];
+
+  let cart = [];
+
+  /* ---------- B. SHOW THE PRODUCTS ---------- */
+  const productList = document.getElementById("product-list");
+  products.forEach(function (p) {
+    productList.innerHTML += `
+      <div class="product">
+        <img src="images/${p.image}" alt="${p.name}">
+        <div class="info">
+          <h3>${p.name}</h3>
+          <p class="origin">${p.origin}</p>
+          <p class="price">${p.price.toLocaleString()} RWF</p>
+          <button class="btn" onclick="addToCart(${p.id})">Add to cart</button>
+        </div>
+      </div>`;
+  });
+
+  /* ---------- C. CART ---------- */
+  function addToCart(id) {
+    cart.push(products.find(function (p) { return p.id === id; }));
+    showCart();
+  }
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    showCart();
+  }
+  function showCart() {
+    const list = document.getElementById("cart-items");
+    list.innerHTML = cart.length === 0 ? "<li>Your cart is empty. Add a coffee from the shop.</li>" : "";
+    let total = 0;
+    cart.forEach(function (item, index) {
+      total += item.price;
+      list.innerHTML += `
+        <li>
+          <span>${item.name}</span>
+          <span>${item.price.toLocaleString()} RWF
+            <button class="remove" onclick="removeFromCart(${index})">Remove</button>
+          </span>
+        </li>`;
+    });
+    document.getElementById("cart-total").textContent = total.toLocaleString();
+    document.getElementById("cart-count").textContent = cart.length;
+  }
+
+  /* ---------- D. ORDER VIA WHATSAPP (change the number) ---------- */
+  document.getElementById("checkout").addEventListener("click", function () {
+    if (cart.length === 0) { alert("Your cart is empty."); return; }
+    let message = "Hello Helvis Shop, I want to order:\n";
+    let total = 0;
+    cart.forEach(function (item) {
+      message += "- " + item.name + " (" + item.price + " RWF)\n";
+      total += item.price;
+    });
+    message += "Total: " + total + " RWF";
+    window.open("https://wa.me/250700000000?text=" + encodeURIComponent(message), "_blank");
+  });
+
+  showCart();
+</script>
+</body>
+</html>
